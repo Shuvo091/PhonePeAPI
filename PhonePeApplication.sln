@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhonePeWeb", "PhonePeWeb\PhonePeWeb.csproj", "{F83C5F19-FF61-4B55-8AA8-350611CB0AA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectureLibraryCreditCard", "ArchitectureLibraryCreditCard\ArchitectureLibraryCreditCard.csproj", "{24567F64-8986-49A5-ADA2-2B80F0035EF5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F83C5F19-FF61-4B55-8AA8-350611CB0AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F83C5F19-FF61-4B55-8AA8-350611CB0AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F83C5F19-FF61-4B55-8AA8-350611CB0AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F83C5F19-FF61-4B55-8AA8-350611CB0AA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24567F64-8986-49A5-ADA2-2B80F0035EF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24567F64-8986-49A5-ADA2-2B80F0035EF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24567F64-8986-49A5-ADA2-2B80F0035EF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24567F64-8986-49A5-ADA2-2B80F0035EF5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {223F35CA-A2E3-45CD-9612-2168304C5AE0}
+	EndGlobalSection
+EndGlobal

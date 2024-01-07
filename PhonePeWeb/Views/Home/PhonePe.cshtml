@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "PhonePe";
+}
+
+<h2>PhonePe</h2>
+
+Payment Amount : <input id="PaymentAmount" name="PaymentAmount" />
+<br />
+<input onclick="javascript: return processPayment_onclick();" type="button" value="Process Payment" />
+<script type="text/javascript">
+    function processPayment_onclick() {
+        let amount = document.getElementById("PaymentAmount").value;
+        $.ajax({
+            url: '/Home/PhonePe',
+            type: 'POST',
+            data: {
+                "paymentAmount": amount
+            },
+            success: function (response) {
+                console.log(response);
+                window.open(response.Data.InstrumentResponse.RedirectInfo.Url);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+</script>

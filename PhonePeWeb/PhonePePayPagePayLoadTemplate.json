@@ -1,0 +1,13 @@
+{
+    "merchantId": "##@@MerchantId@@##",
+    "merchantTransactionId": "##@@MerchantTransactionId@@##",
+    "merchantUserId": "##@@MerchantUserId@@##",
+    "amount": "##@@CreditCardAmount@@##",
+    "redirectUrl": "##@@MerchantRedirectUrl@@##",
+    "redirectMode": "##@@MerchantRedirectMode@@##",
+    "callbackUrl": "##@@MerchantCallBackUrl@@##",
+    "mobileNumber": "##@@CustomerMobileNumber@@##",
+    "paymentInstrument": {
+        "type": "PAY_PAGE"
+    }
+}

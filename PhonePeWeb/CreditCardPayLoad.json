@@ -1,0 +1,39 @@
+{
+  "merchantId": "PGTESTPAYUAT92",
+  "merchantTransactionId": "<merchantTransactionId>",
+  "merchantUserId": "MU933037302229373",
+  "amount": 99999,
+  "redirectUrl": "https://webhook.site/redirect-url",
+  "redirectMode": "REDIRECT",
+  "callbackUrl": "https://webhook.site/callback-url",
+  "mobileNumber": "9999999999",
+  //"card_number": "4208585190116667",
+  //"card_type": "CREDIT_CARD",
+  //"card_issuer": "VISA",
+  //"expiry_month": "06",
+  //"expiry_year": "2027",
+  //"cvv": "508"
+  "paymentInstrument": {
+    "type": "CARD",
+    "authMode": "3DS",
+    "saveCard": false,
+    "cardDetails": {
+      "encryptedCardNumber": "<encryptedCardNumber>",
+      "encryptionKeyId": 10,
+      "cardHolderName": "Carlos Sainz",
+      "expiry": {
+        "month": "09",
+        "year": "2025"
+      },
+      "encryptedCvv": "<encryptedCvv>",
+      "billingAddress": {
+        "line1": "Unit No.001, Ground Floor, Boston House",
+        "line2": "Suren Road, Andheri(East)",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "zip": "400093",
+        "country": "India"
+      }
+    }
+  }
+}
