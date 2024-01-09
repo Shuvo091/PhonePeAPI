@@ -14,7 +14,7 @@ namespace ArchitectureLibraryCreditCardModels
         public string CreditCardAmount { set; get; }
         public string MerchantRedirectUrl { set; get; }
         public string MerchantRedirectMode { set; get; }
-        public string MerchantCallBackUrlId { set; get; }
+        public string MerchantCallBackUrl { set; get; }
         public string CustomerMobileNumber { set; get; }
         public string PaymentInstrumentType { set; get; }
         public string SaltKey { set; get; }

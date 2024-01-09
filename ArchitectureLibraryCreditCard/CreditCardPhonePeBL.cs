@@ -44,7 +44,7 @@ namespace ArchitectureLibraryCreditCardBusinessLayer
             payloadJson = payloadJson.Replace("##@@CreditCardAmount@@##", phonePePayLoad.CreditCardAmount);
             payloadJson = payloadJson.Replace("##@@MerchantRedirectUrl@@##", phonePePayLoad.MerchantRedirectUrl);
             payloadJson = payloadJson.Replace("##@@MerchantRedirectMode@@##", phonePePayLoad.MerchantRedirectMode);
-            payloadJson = payloadJson.Replace("##@@MerchantCallBackUrl@@##", phonePePayLoad.MerchantCallBackUrlId);
+            payloadJson = payloadJson.Replace("##@@MerchantCallBackUrl@@##", phonePePayLoad.MerchantCallBackUrl);
             payloadJson = payloadJson.Replace("##@@CustomerMobileNumber@@##", phonePePayLoad.CustomerMobileNumber);
             string base64EncodedPayload = Base64Encode(payloadJson);
             var stringToHash = base64EncodedPayload + phonePePayLoad.RequestUri + phonePePayLoad.SaltKey;
@@ -81,7 +81,6 @@ namespace ArchitectureLibraryCreditCardBusinessLayer
                 throw new Exception(restResponse.StatusCode + " " + restResponse.ErrorMessage);
             }
         }
-
         public void CheckApiStatus(string restAPIRootUri, string requestUri, string merchantId, string merchantTransactionId, string saltKey)
         {
             var saltIndex = 1;

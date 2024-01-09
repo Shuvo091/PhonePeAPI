@@ -1,0 +1,13 @@
+{
+  "merchantId": "PGTESTPAYUAT91",
+  "merchantTransactionId": "<merchantTransactionId>",
+  "merchantUserId": "MUID123",
+  "amount": 99999,
+  "redirectUrl": "https://webhook.site/c7c8645a-ddd4-4aa0-89f0-9997b4accbaf",
+  "redirectMode": "POST",
+  "callbackUrl": "https://webhook.site/c7c8645a-ddd4-4aa0-89f0-9997b4accbaf",
+  "mobileNumber": "9999999999",
+  "paymentInstrument": {
+    "type": "PAY_PAGE"
+  }
+}
