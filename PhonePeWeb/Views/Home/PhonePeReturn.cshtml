@@ -1,7 +1,45 @@
-﻿
+﻿@model ArchitectureLibraryCreditCardModels.PhonePeCheckPaymentResponse
+
 @{
     ViewBag.Title = "PhonePeReturn";
 }
 
 <h2>PhonePeReturn</h2>
+
+<p>Merchant ID: @Model.Data.MerchantId</p>
+<p>Merchant Transaction ID: @Model.Data.MerchantTransactionId</p>
+<p>Transaction ID: @Model.Data.TransactionId</p>
+<p>Amount: @Model.Data.Amount</p>
+<p>State: @Model.Data.State</p>
+<p>Response Code: @Model.Data.ResponseCode</p>
+
+@if (Model.Data.PaymentInstrument != null)
+{
+    <p>Payment Instrument Type: @Model.Data.PaymentInstrument.Type</p>
+
+    if (Model.Data.PaymentInstrument.Type == "UPI")
+    {
+        <p>UTR: @Model.Data.PaymentInstrument.Utr</p>
+    }
+    else if (Model.Data.PaymentInstrument.Type == "CARD")
+    {
+        <p>Card Type: @Model.Data.PaymentInstrument.CardType</p>
+        <p>PG Transaction ID: @Model.Data.PaymentInstrument.PgTransactionId</p>
+        <p>Bank Transaction ID: @Model.Data.PaymentInstrument.BankTransactionId</p>
+        <p>PG Authorization Code: @Model.Data.PaymentInstrument.PgAuthorizationCode</p>
+        <p>ARN: @Model.Data.PaymentInstrument.Arn</p>
+        <p>Bank ID: @Model.Data.PaymentInstrument.BankId</p>
+        <p>BRN: @Model.Data.PaymentInstrument.Brn</p>
+    }
+    else if (Model.Data.PaymentInstrument.Type == "NETBANKING")
+    {
+        <p>PG Transaction ID: @Model.Data.PaymentInstrument.PgTransactionId</p>
+        <p>PG Service Transaction ID: @Model.Data.PaymentInstrument.PgServiceTransactionId</p>
+        <p>Bank Transaction ID: @Model.Data.PaymentInstrument.BankTransactionId</p>
+        <p>Bank ID: @Model.Data.PaymentInstrument.BankId</p>
+    }
+}
+
+<p>Message: @Model.Message</p>
+
 

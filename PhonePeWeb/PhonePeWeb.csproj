@@ -214,6 +214,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\PhonePe.cshtml" />
     <Content Include="Views\Home\PhonePeReturn.cshtml" />
+    <Content Include="Views\Home\PhonePeTimeOut.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

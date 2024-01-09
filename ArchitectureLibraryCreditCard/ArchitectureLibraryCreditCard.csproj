@@ -77,14 +77,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreditCardPhonePeBL.cs" />
+    <Compile Include="PhonePeCheckPaymentData.cs" />
+    <Compile Include="PhonePeCheckPaymentInstrument.cs" />
+    <Compile Include="PhonePeCheckPaymentResponse.cs" />
     <Compile Include="PhonePeData.cs" />
+    <Compile Include="PhonePeEnum.cs" />
     <Compile Include="PhonePeInstrumentResponse.cs" />
     <Compile Include="PhonePePayLoad.cs" />
+    <Compile Include="PhonePePaymentResponseModel.cs" />
     <Compile Include="PhonePeRedirectInfo.cs" />
+    <Compile Include="PhonePeResponseCode.cs" />
     <Compile Include="PhonePeRestResponseObject.cs" />
+    <Compile Include="PhonePeServerToServerResponseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

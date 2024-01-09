@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -30,16 +31,16 @@ namespace PhonePeWeb.Controllers
             return View();
         }
 
+        public ActionResult PhonePeTimeOut()
+        {
+            ViewBag.Message = "Payment has timed Out.";
+
+            return View();
+        }
+
         [HttpGet]
         public ActionResult PhonePe()
         {
-            //CreditCardPhonePeBL_Old creditCardPhonePeBL = new CreditCardPhonePeBL_Old();
-            //string templateFileName, baseUrl, restAPIRootUri, requestUri;
-            //baseUrl = "https://api-preprod.phonepe.com/";
-            //restAPIRootUri = "https://api-preprod.phonepe.com/apis/pg-sandbox/";
-            //requestUri = "pg/v1/pay";
-            //templateFileName = Server.MapPath("~/") + "PayPagePayLoad.json";
-            //creditCardPhonePeBL.ProcessPayLoad(templateFileName, baseUrl, restAPIRootUri, requestUri);
             return View();
         }
 
@@ -66,20 +67,47 @@ namespace PhonePeWeb.Controllers
                 SaltIndex = "1",
                 CheckStatusRestAPIRootUri = "",
                 CheckStatusRequestUri = "",
-                MerchantCallBackUrl = "https://localhost:44386/Home/PhonePeReturn",
+                MerchantCallBackUrl = "https://localhost:44386/Home/PhonePeReturnCallBack",
             };
             string templateFullFileName = Server.MapPath("~/") + "PhonePePayPagePayLoadTemplate.json";
             PhonePeRestResponseObject phonePeRestResponseObject = creditCardPhonePeBL.ProcessPhonePe(templateFullFileName, phonePePayLoad);
-            // Response.Redirect(responseObj.Data.InstrumentResponse.RedirectInfo.Url);
-            // return Json(responseObj);
             return Json(phonePeRestResponseObject);
         }
 
+
+        public delegate Task<PhonePeStatusResult> CheckPaymentStatusDelegate(PhonePePaymentResponseModel responseObj, string restAPIRootUri, string requestUri, string saltKey);
+
         [HttpPost]
-        public ActionResult PhonePeReturn(FormCollection formCollection)
+        public async Task<ActionResult> PhonePeReturn(PhonePePaymentResponseModel responseObj)
         {
-            // form["FirstName"] 
-            return View();
+            if (false) // Check (from database or cache) if server to server has been recieved from PhonePe server.
+            {
+                // Decide if transaction is success or failure
+            }
+            else // This assumes server to server response hasn't been recieved. So, transaction status has to be checked.
+            {
+                CreditCardPhonePeBL creditCardPhonePeBL = new CreditCardPhonePeBL();
+                var paymentStatus = await creditCardPhonePeBL.CheckApiStatusAsync("https://api-preprod.phonepe.com/apis/pg-sandbox", "/pg/v1/status", responseObj.MerchantId, responseObj.TransactionId, "05992a0b-5254-4f37-86fb-e23bb79ea7e7");
+                if (paymentStatus.Code == PhonePeResponseCode.PAYMENT_PENDING)
+                {
+                    Task.Run(async () =>
+                    {
+                        var result = await creditCardPhonePeBL.CheckPhonePePaymentStatus(responseObj, "https://api-preprod.phonepe.com/apis/pg-sandbox", "/pg/v1/status", "05992a0b-5254-4f37-86fb-e23bb79ea7e7");
+
+                        // You can handle the result of the background task if needed
+                        Console.WriteLine($"Background Task Result: {result}");
+                    });
+
+                }
+                return View(paymentStatus);
+            }
+        }
+
+        [HttpPost]
+        public void PhonePeReturnCallBack(PhonePeServerToServerResponseModel responseObj)
+        {
+            // Decode the response and save the result to database for future uses.
+            // A response should come from PhonePe server after transaction is success or failure
         }
     }
 }

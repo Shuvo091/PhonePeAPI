@@ -2,14 +2,11 @@
 using Newtonsoft.Json;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ArchitectureLibraryCreditCardBusinessLayer
@@ -32,13 +29,13 @@ namespace ArchitectureLibraryCreditCardBusinessLayer
             }
             return hash;
         }
-        public PhonePeRestResponseObject ProcessPhonePe(string templateFullFileName, PhonePePayLoad phonePePayLoad) 
+        public PhonePeRestResponseObject ProcessPhonePe(string templateFullFileName, PhonePePayLoad phonePePayLoad)
         {
             string payloadJson;
             StreamReader streamReader = new StreamReader(templateFullFileName);
             payloadJson = streamReader.ReadToEnd();
             streamReader.Close();
-            payloadJson = payloadJson.Replace("##@@MerchantId@@##", phonePePayLoad.MerchantId);     
+            payloadJson = payloadJson.Replace("##@@MerchantId@@##", phonePePayLoad.MerchantId);
             payloadJson = payloadJson.Replace("##@@MerchantTransactionId@@##", phonePePayLoad.MerchantTransactionId);
             payloadJson = payloadJson.Replace("##@@MerchantUserId@@##", phonePePayLoad.MerchantUserId);
             payloadJson = payloadJson.Replace("##@@CreditCardAmount@@##", phonePePayLoad.CreditCardAmount);
@@ -81,29 +78,75 @@ namespace ArchitectureLibraryCreditCardBusinessLayer
                 throw new Exception(restResponse.StatusCode + " " + restResponse.ErrorMessage);
             }
         }
-        public void CheckApiStatus(string restAPIRootUri, string requestUri, string merchantId, string merchantTransactionId, string saltKey)
+        public async Task<PhonePeStatusResult> CheckPhonePePaymentStatus(PhonePePaymentResponseModel responseObj, string restAPIRootUri, string requestUri, string saltKey)
+        {
+            DateTime startTime = DateTime.Now;
+
+            // First status check at 20 seconds post transaction start
+            Thread.Sleep(20000);
+
+            while (true)
+            {
+                var paymentStatus = await CheckApiStatusAsync(restAPIRootUri, requestUri, responseObj.MerchantId, responseObj.TransactionId, saltKey);
+
+                if (paymentStatus.Code == PhonePeResponseCode.PAYMENT_SUCCESS) return PhonePeStatusResult.Success;
+                else if (paymentStatus.Code == PhonePeResponseCode.PAYMENT_PENDING)
+                {
+                    int elapsedTimeSeconds = (int)(DateTime.Now - startTime).TotalSeconds;
+
+                    if (elapsedTimeSeconds < 30)
+                        Thread.Sleep(3000); // Every 3 seconds for the next 30 seconds
+                    else if (elapsedTimeSeconds < 90)
+                        Thread.Sleep(6000); // Every 6 seconds once for the next 60 seconds
+                    else if (elapsedTimeSeconds < 150)
+                        Thread.Sleep(10000); // Every 10 seconds for the next 60 seconds
+                    else if (elapsedTimeSeconds < 210)
+                        Thread.Sleep(30000); // Every 30 seconds for the next 60 seconds
+                    else if (elapsedTimeSeconds < 1200)
+                        Thread.Sleep(60000); // Every 1 min until timeout (20 mins)
+                    else
+                    {
+                        return PhonePeStatusResult.Timeout;
+                    }
+                }
+                else return PhonePeStatusResult.Failure;
+            }
+        }
+        public async Task<PhonePeCheckPaymentResponse> CheckApiStatusAsync(string restAPIRootUri, string requestUri, string merchantId, string merchantTransactionId, string saltKey)
         {
             var saltIndex = 1;
-            var stringToHash = restAPIRootUri + requestUri + merchantId + "/" + merchantTransactionId + "/status" + saltKey;
+            var stringToHash = requestUri + "/" + merchantId + "/" + merchantTransactionId + saltKey;
             var sha256 = SHA256Hash(stringToHash);
             var finalXHeader = sha256 + "###" + saltIndex;
 
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(restAPIRootUri);
+            string apiUrl = restAPIRootUri + requestUri + "/" + merchantId + "/" + merchantTransactionId;
 
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json";
-            webRequest.Headers.Add("x-verify", finalXHeader);
-
-            string responseData = string.Empty;
-
-            using (StreamReader responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream()))
+            using (HttpClient client = new HttpClient())
             {
-                responseData = responseReader.ReadToEnd();
-                if (responseData.Length > 0)
+                // Create HttpRequestMessage
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
+
+
+                // Set other request headers
+                //request.Headers.Add("Content-Type", "application/json");
+                request.Headers.Add("X-VERIFY", finalXHeader);
+                request.Headers.Add("X-MERCHANT-ID", merchantId);
+
+                // Make the API call
+                HttpResponseMessage response = await client.SendAsync(request);
+
+                // Check the response
+                if (response.IsSuccessStatusCode)
                 {
-                    //PhonePeStatusResponseBody responseBody = JsonConvert.DeserializeObject<PhonePeStatusResponseBody>(responseData);
-                    Console.WriteLine(responseData);
-                    //Console.WriteLine(responseBody.message);
+                    // Handle successful response
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<PhonePeCheckPaymentResponse>(responseBody);
+                }
+                else
+                {
+                    // Handle error response
+                    Console.WriteLine("Error: " + response.StatusCode);
+                    throw new Exception(response.StatusCode.ToString());
                 }
             }
         }
